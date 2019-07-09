@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-from bs4 import BeautifulSoup
+from pyquery import PyQuery as pq
 
 with open('config.json', 'r') as file_obj:
     config = file_obj.read()
@@ -11,10 +11,9 @@ with open('config.json', 'r') as file_obj:
     api_key = str(config['api_key'])
     min_width = int(config['min_width'])
 
-info = requests.get('https://wall.alphacoders.com/api2.0/get.php?auth=%s&method=tag&id=%s&page=1&sort=views&info_level=3' %
-                    (api_key, tag_id))
-info = json.loads(info.text)
-dir_name = info['wallpapers'][0]['sub_category']
+url = 'https://wall.alphacoders.com/tags.php?tid=' + str(tag_id)
+html = pq(url=url)
+dir_name = html('span.breadcrumb-element').text()
 dir_name = "".join(i for i in dir_name if i.isalnum())
 if not os.path.isdir(dir_name):
     os.mkdir(dir_name)

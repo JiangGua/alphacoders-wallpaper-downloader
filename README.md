@@ -3,7 +3,7 @@
 ## 所需库
 
 - requests
-- BeautifulSoup
+- PyQuery
 
 ## 使用方法
 

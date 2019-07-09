@@ -26,6 +26,10 @@ for i in range(1, max_page + 1):
     info = json.loads(info.text)
 
     if info['success']:
+        if len(info['wallpapers']) == 0:
+            print('已无更多图片')
+            break
+
         for j in range(len(info['wallpapers'])):
             pic_info = info['wallpapers'][j]
 
@@ -34,9 +38,12 @@ for i in range(1, max_page + 1):
                 continue
 
             file_name = pic_info['id'] + '.' + pic_info['file_type']
-            pic = requests.get(pic_info['url_image'])
+            if os.path.exists(file_name):
+                continue
 
+            pic = requests.get(pic_info['url_image'])
             with open(file_name, 'wb') as file_obj:
                 file_obj.write(pic.content)
+
         print('第 %d 页下载完成' % i)
 

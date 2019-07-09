@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -10,7 +11,13 @@ with open('config.json', 'r') as file_obj:
     api_key = str(config['api_key'])
     min_width = int(config['min_width'])
 
-print(config)
+info = requests.get('https://wall.alphacoders.com/api2.0/get.php?auth=%s&method=tag&id=%s&page=1&sort=views&info_level=3' %
+                    (api_key, tag_id))
+info = json.loads(info.text)
+dir_name = info['wallpapers'][0]['sub_category']
+if not os.path.isdir(dir_name):
+    os.mkdir(dir_name)
+os.chdir(dir_name)
 
 for i in range(1, max_page + 1):
     info = requests.get('https://wall.alphacoders.com/api2.0/get.php?auth=%s&method=tag&id=%s&page=%d&sort=views' % 

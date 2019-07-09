@@ -15,6 +15,7 @@ info = requests.get('https://wall.alphacoders.com/api2.0/get.php?auth=%s&method=
                     (api_key, tag_id))
 info = json.loads(info.text)
 dir_name = info['wallpapers'][0]['sub_category']
+dir_name = "".join(i for i in dir_name if i.isalnum())
 if not os.path.isdir(dir_name):
     os.mkdir(dir_name)
 os.chdir(dir_name)

@@ -2,12 +2,6 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
-#tag_id = 30504
-#page = 1
-
-#with open('api.txt', 'r') as file_obj:
-#    api_key = file_obj.read()
-
 with open('config.json', 'r') as file_obj:
     config = file_obj.read()
     config = json.loads(config)

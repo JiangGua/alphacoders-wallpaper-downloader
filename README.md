@@ -20,3 +20,7 @@
         "max_page": "2",            // 下载的最大页数
         "min_width": "1920"         // 图片最小宽度
     }
+
+## 其它说明
+
+- 比如 https://wall.alphacoders.com/tags.php?tid=30504 中的 tag_id 就是 30504

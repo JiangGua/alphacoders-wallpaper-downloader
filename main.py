@@ -17,10 +17,10 @@ def fetch(api_key, tag_id, min_width, i):
 
     if info['success']:
         if len(info['wallpapers']) == 0:
-            print('已无更多图片')
+            print('开始下载…')
             return False
 
-        threads = []
+        result = []
 
         for j in range(len(info['wallpapers'])):
             pic_info = info['wallpapers'][j]
@@ -33,17 +33,14 @@ def fetch(api_key, tag_id, min_width, i):
             if os.path.exists(file_name):
                 continue
 
-            #TODO: 其实应该改成先把要下的所有都合好，再一起下，不是一页一页下
-            t = Thread(target = download_pic, args = [pic_info['url_image'], file_name] )
-            t.start()
-            threads.append(t)
-        
-        for t in threads:
-            t.join()
+            result.append({
+                "url": pic_info['url_image'],
+                "name": file_name,
+            })
             
 
-        print('第 %d 页下载完成' % i)
-        return True
+        print('已将第 %d 页添加到下载队列' % i)
+        return result
 
 if __name__ == "__main__":
     # Read Config
@@ -60,6 +57,7 @@ if __name__ == "__main__":
             min_width = int(config['min_width'])
         except:
             min_width = 0
+
     # Main
     url = 'https://wall.alphacoders.com/tags.php?tid=' + str(tag_id)
     html = pq(url=url)
@@ -69,15 +67,28 @@ if __name__ == "__main__":
         os.mkdir(dir_name)
     os.chdir(dir_name)
 
+    queue = []
+    threads = []
+
     if max_page != 0:
         for i in range(1, max_page + 1):
-            status = fetch(api_key, tag_id, min_width, i)
-            if status == False:
+            result = fetch(api_key, tag_id, min_width, i)
+            if result == False:
                 break
+            queue += result
     else:
         i = 1
         while True:
-            status = fetch(api_key, tag_id, min_width, i)
-            if status == False:
+            result = fetch(api_key, tag_id, min_width, i)
+            if result == False:
                 break
+            queue += result
             i += 1
+
+    for i in queue:
+        t = Thread(target = download_pic, args = [i["url"], i["name"]])
+        t.start()
+        threads.append(t)
+    
+    for t in threads:
+        t.join()

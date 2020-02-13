@@ -67,7 +67,7 @@ if __name__ == "__main__":
         os.mkdir(dir_name)
     os.chdir(dir_name)
 
-    queue = []
+    queue = []  # 下载链接和对应图片文件名的全列表(下载队列)
     threads = []
 
     if max_page != 0:
@@ -92,3 +92,5 @@ if __name__ == "__main__":
     
     for t in threads:
         t.join()
+
+    print("下载完成")
